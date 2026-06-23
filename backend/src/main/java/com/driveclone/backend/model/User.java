@@ -5,6 +5,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.List;
+import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+
+
 
 @Entity
 @Table(name = "users")
@@ -18,6 +24,7 @@ public class User {
 
     private String email;
 
+    @JsonIgnore
     private String password;
 
     public User(){
@@ -52,5 +59,9 @@ public class User {
     public void setPassword(String password){
         this.password=password;
     }
+
+    @OneToMany(mappedBy = "owner")
+    private List<Folder> folders;
+
 
 }
