@@ -36,4 +36,8 @@ public class FolderService {
     public List<Folder> getFoldersByUserId(Long userId) {
         return folderRepository.findByOwnerId(userId);
     }
+
+    public Folder getFolderById(Long id) {
+        return folderRepository.findById(id).orElse(null);
+    }
 }
