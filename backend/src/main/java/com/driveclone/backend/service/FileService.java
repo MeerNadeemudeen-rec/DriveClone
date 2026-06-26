@@ -86,4 +86,23 @@ public class FileService {
 
         return new UrlResource(path.toUri());
     }
+    public boolean deleteFile(Long id) throws IOException {
+
+        FileEntity file = fileRepository.findById(id).orElse(null);
+
+        if (file == null) {
+            return false;
+        }
+
+        Path path = Paths.get(file.getPath());
+
+        Files.deleteIfExists(path);
+
+        fileRepository.delete(file);
+
+        return true;
+    }
+    public List<FileEntity> searchFiles(String name) {
+        return fileRepository.findByNameContainingIgnoreCase(name);
+    }
 }

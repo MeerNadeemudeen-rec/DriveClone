@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface FileRepository extends JpaRepository<FileEntity, Long> {
     List<FileEntity> findByFolderId(Long folderId);
+    List<FileEntity> findByNameContainingIgnoreCase(String name);
 }
