@@ -6,14 +6,18 @@ import com.driveclone.backend.repository.FolderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.driveclone.backend.model.Folder;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import java.util.List;
 
 @Service
 public class FileService {
 
-    @Autowired
-    private FileRepository fileRepository;
 
     @Autowired
     private FolderRepository folderRepository;
@@ -35,7 +39,34 @@ public class FileService {
         return fileRepository.save(file);
     }
 
+    @Autowired
+    private final FileRepository fileRepository;
+
+    public FileService(FileRepository fileRepository) {
+        this.fileRepository = fileRepository;
+    }
+
+
     public List<FileEntity> getFilesByFolderId(Long folderId) {
         return fileRepository.findByFolderId(folderId);
+    }
+
+    public FileEntity uploadFile(MultipartFile file) throws IOException {
+
+        String uploadDir = "uploads/";
+
+        Path path = Paths.get(uploadDir + file.getOriginalFilename());
+
+        Files.write(path, file.getBytes());
+
+        FileEntity fileEntity = new FileEntity();
+
+        fileEntity.setName(file.getOriginalFilename());
+        fileEntity.setSize(file.getSize());
+        fileEntity.setType(file.getContentType());
+        fileEntity.setPath(path.toString());
+        fileEntity.setUploadedAt(java.time.LocalDate.now().toString());
+
+        return fileRepository.save(fileEntity);
     }
 }

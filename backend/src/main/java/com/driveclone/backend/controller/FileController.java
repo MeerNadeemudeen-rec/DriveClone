@@ -4,7 +4,7 @@ import com.driveclone.backend.model.FileEntity;
 import com.driveclone.backend.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
@@ -31,5 +31,13 @@ public class FileController {
             @PathVariable Long folderId) {
 
         return fileService.getFilesByFolderId(folderId);
+    }
+
+    @PostMapping("/upload")
+    public FileEntity uploadFile(
+            @RequestParam("file") MultipartFile file)
+            throws Exception {
+
+        return fileService.uploadFile(file);
     }
 }
