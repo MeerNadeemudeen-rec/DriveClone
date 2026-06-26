@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.driveclone.backend.model.Folder;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+
+import java.net.MalformedURLException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -68,5 +72,18 @@ public class FileService {
         fileEntity.setUploadedAt(java.time.LocalDate.now().toString());
 
         return fileRepository.save(fileEntity);
+    }
+
+    public Resource downloadFile(Long id) throws MalformedURLException {
+
+        FileEntity file = fileRepository.findById(id).orElse(null);
+
+        if (file == null) {
+            return null;
+        }
+
+        Path path = Paths.get(file.getPath());
+
+        return new UrlResource(path.toUri());
     }
 }
