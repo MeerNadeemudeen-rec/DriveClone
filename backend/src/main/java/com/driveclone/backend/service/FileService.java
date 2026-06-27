@@ -11,7 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
 import java.net.MalformedURLException;
-
+import java.nio.file.StandardCopyOption;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -105,4 +105,24 @@ public class FileService {
     public List<FileEntity> searchFiles(String name) {
         return fileRepository.findByNameContainingIgnoreCase(name);
     }
+    public FileEntity renameFile(Long id, String newName) throws IOException {
+
+        FileEntity file = fileRepository.findById(id).orElse(null);
+
+        if (file == null) {
+            return null;
+        }
+
+        Path oldPath = Paths.get(file.getPath());
+
+        Path newPath = oldPath.resolveSibling(newName);
+
+        Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
+
+        file.setName(newName);
+        file.setPath(newPath.toString());
+
+        return fileRepository.save(file);
+    }
+
 }

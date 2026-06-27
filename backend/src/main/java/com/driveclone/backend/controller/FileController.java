@@ -74,4 +74,17 @@ public class FileController {
     public List<FileEntity> searchFiles(@RequestParam String name) {
         return fileService.searchFiles(name);
     }
+    @PutMapping("/{id}/rename")
+    public ResponseEntity<FileEntity> renameFile(
+            @PathVariable Long id,
+            @RequestBody FileEntity updatedFile) throws IOException {
+
+        FileEntity file = fileService.renameFile(id, updatedFile.getName());
+
+        if (file == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(file);
+    }
 }
